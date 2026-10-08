@@ -40,14 +40,14 @@ test('Range datepicker', async ({ page }) => {
     date2.setDate(date2.getDate() + 10)
 
     const incialDate = date1.getDate().toString()
-    const expectedInicialMonth = date1.toLocaleString('En-US', {month: 'short'})
-    const expectedLongInicialMonth = date1.toLocaleString('En-US', {month: 'long'})
+    const expectedInicialMonth = date1.toLocaleString('En-US', { month: 'short' })
+    const expectedLongInicialMonth = date1.toLocaleString('En-US', { month: 'long' })
     const expectedInicialYear = date1.getFullYear()
 
     let currentMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
     const expectedInicialMonthAndYear = `${expectedLongInicialMonth} ${expectedInicialYear}`
 
-    while(!currentMonthAndYear?.includes(expectedInicialMonthAndYear)){
+    while (!currentMonthAndYear?.includes(expectedInicialMonthAndYear)) {
         await page.locator('.next-month').click()
         currentMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
     }
@@ -55,12 +55,12 @@ test('Range datepicker', async ({ page }) => {
     await page.locator('.day-cell:not(.bounding-month)').getByText(incialDate, { exact: true }).click()
 
     const finalDate = date2.getDate().toString()
-    const expectedFinalMonth = date2.toLocaleString('En-US', {month: 'short'})
-    const expectedLongFinalMonth = date2.toLocaleString('En-US', {month: 'long'})
-    const expectedFinalYear =  date2.getFullYear()
+    const expectedFinalMonth = date2.toLocaleString('En-US', { month: 'short' })
+    const expectedLongFinalMonth = date2.toLocaleString('En-US', { month: 'long' })
+    const expectedFinalYear = date2.getFullYear()
     const expectedFinalMonthAndYear = `${expectedLongFinalMonth} ${expectedFinalYear}`
 
-    while(!currentMonthAndYear?.includes(expectedFinalMonthAndYear)){
+    while (!currentMonthAndYear?.includes(expectedFinalMonthAndYear)) {
         await page.locator('.next-month').click()
         currentMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
     }

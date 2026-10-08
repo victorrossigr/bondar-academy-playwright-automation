@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { NavigationPage } from '../page-objects/navigation-page';
 
 test.beforeEach(async ({ page }) => {
+    const navigatoTo = new NavigationPage(page)
     await page.goto('https://playground.bondaracademy.com/')
-    await page.getByText('Forms').click()
-    await page.getByText('Form Layouts').click()
+    await navigatoTo.formLayoutsPage()
 })
 
 test('Inline form', async ({ page }) => {
@@ -58,7 +59,7 @@ test('Form wihtout labels generated and improved', async ({ page }) => {
     await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('This is a test message')
 
     await page.getByRole('button', { name: 'Send' }).click()
-    await expect(page.locator('nb-card').filter({hasText: 'Form without labels'}).locator('form')).toHaveClass(/ng-submitted/)
+    await expect(page.locator('nb-card').filter({ hasText: 'Form without labels' }).locator('form')).toHaveClass(/ng-submitted/)
     // await expect(page.locator('nb-card').filter({ hasText: 'Form without labels' }).locator('.ng-submitted')).toBeVisible()
 })
 
