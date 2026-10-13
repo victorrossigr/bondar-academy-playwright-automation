@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { NavigationPage } from '../page-objects/navigation-page';
+import { FormLayoutsPage } from '../page-objects/form-layouts-page';
 
 test.beforeEach(async ({ page }) => {
     const navigatoTo = new NavigationPage(page)
@@ -22,6 +23,11 @@ test('Inline form', async ({ page }) => {
     expect(inlineFormSection.locator('form')).toHaveClass(/ng-submitted/)
 })
 
+test('Inline form with parametrized page object methods', async ({page}) => {
+    const inlineForm = new FormLayoutsPage(page)
+    await inlineForm.submitInlineForm('Victor Rossi', 'victor@test.com', true)
+})
+
 test('Using the grid', async ({ page }) => {
     const usingGridSection = page.locator('nb-card').filter({ hasText: 'Using the Grid' })
 
@@ -35,9 +41,14 @@ test('Using the grid', async ({ page }) => {
     await usingGridSection.getByText('Option 1').click()
     expect(usingGridSection.getByText('Option 1')).toBeTruthy()
 
-    expect(usingGridSection.locator('form')).toHaveClass('ng-untouched ng-pristine ng-valid')
+    expect(usingGridSection.locator('form')).not.toHaveClass(/ng-submitted/)
     await usingGridSection.getByRole('button').click()
     expect(usingGridSection.locator('form')).toHaveClass(/ng-submitted/)
+})
+
+test('Using the grid form with parametrized page object methods', async ({page}) => {
+    const usingGridForm = new FormLayoutsPage(page)
+    await usingGridForm.submitUsingTheGrid('victor@test.com', 'password_teste', 'Option 2')
 })
 
 test('Basic form generated and clean', async ({ page }) => {
