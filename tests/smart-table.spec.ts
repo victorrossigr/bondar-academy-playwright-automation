@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { table } from 'console';
+import { NavigationPage } from '../page-objects/navigation-page';
 
 test.beforeEach(async ({ page }) => {
+    const navigateTo = new NavigationPage(page)
     await page.goto('https://playground.bondaracademy.com/')
-    await page.getByText('Tables & Data').click()
-    await page.getByText('Smart Table').click()
+    await navigateTo.smartTablePage()
 })
 
 test('Excluding a row', async ({ page }) => {

@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { DatePickerPage } from '../page-objects/date-picker-page';
+import { NavigationPage } from '../page-objects/navigation-page';
 
 test.beforeEach(async ({ page }) => {
+    const navigateTo = new NavigationPage(page)
     await page.goto('https://playground.bondaracademy.com/')
-    await page.getByText('Forms').click()
-    await page.getByText('Datepicker').click()
+    await navigateTo.datePickerPage()
 })
 
 test('Simple datepicker', async ({ page }) => {
@@ -28,6 +30,12 @@ test('Simple datepicker', async ({ page }) => {
 
     await page.locator('.day-cell:not(.bounding-month)').getByText(expectedDay, { exact: true }).click()
     await expect(calendarField).toHaveValue(expectedDate)
+})
+
+test('Selecting dates with parametrized page objects methods', async ({ page }) => {
+    const datePickerPage = new DatePickerPage(page)
+    await datePickerPage.selectCommonDatepickerDateFromToday(5)
+    await datePickerPage.selectDatepickerWithRangeFromToday(8, 14)
 })
 
 test('Range datepicker', async ({ page }) => {
@@ -91,7 +99,6 @@ test('Range datepicker AI improved', async ({ page }) => {
         const monthAndYear = page.locator('nb-calendar-view-mode')
         const expectedMonthAndYear = formatLongMonthYear(date)
 
-        // navega até o mês desejado
         while (!(await monthAndYear.textContent())?.includes(expectedMonthAndYear)) {
             await page.locator('.next-month').click()
         }
@@ -102,8 +109,8 @@ test('Range datepicker AI improved', async ({ page }) => {
             .click()
     }
 
-    await selectDay(date1)   // navega e clica no dia inicial
-    await selectDay(date2)   // navega (se necessário) e clica no dia final
+    await selectDay(date1)
+    await selectDay(date2)
 
     await expect(dateField).toHaveValue(expectedDate)
 })
