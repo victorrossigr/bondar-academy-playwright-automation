@@ -1,11 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { NavigationPage } from '../page-objects/navigation-page';
-import { FormLayoutsPage } from '../page-objects/form-layouts-page';
+import { PageManager } from '../page-objects/page-manager';
 
 test.beforeEach(async ({ page }) => {
-    const navigateTo = new NavigationPage(page)
+    const pom = new PageManager(page)
     await page.goto('https://playground.bondaracademy.com/')
-    await navigateTo.formLayoutsPage()
+    await pom.navigateTo.formLayoutsPage()
+})
+
+test('Submiting forms with parametrized page object methods', async ({ page }) => {
+    const pom = new PageManager(page)
+    await pom.formLayoutsPage.submitInlineForm('Victor Rossi', 'victor@test.com', true)
+    await pom.formLayoutsPage.submitUsingTheGrid('victor@test.com', 'password_teste', 'Option 2')
 })
 
 test('Inline form', async ({ page }) => {
@@ -39,12 +44,6 @@ test('Using the grid', async ({ page }) => {
     expect(usingGridSection.locator('form')).not.toHaveClass(/ng-submitted/)
     await usingGridSection.getByRole('button').click()
     expect(usingGridSection.locator('form')).toHaveClass(/ng-submitted/)
-})
-
-test('Submiting forms with parametrized page object methods', async ({page}) => {
-    const formLayoutsPage = new FormLayoutsPage(page)
-    await formLayoutsPage.submitInlineForm('Victor Rossi', 'victor@test.com', true)
-    await formLayoutsPage.submitUsingTheGrid('victor@test.com', 'password_teste', 'Option 2')
 })
 
 test('Basic form generated and clean', async ({ page }) => {

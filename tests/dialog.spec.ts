@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { NavigationPage } from '../page-objects/navigation-page';
+import { PageManager } from '../page-objects/page-manager';
 
 test.beforeEach(async ({ page }) => {
-    const navigateTo = new NavigationPage(page)
+    const pom = new PageManager(page)
     await page.goto('https://playground.bondaracademy.com/')
-    await navigateTo.dialogPage()
+    await pom.navigateTo.dialogPage()
 })
 
 test('Open dialog', async ({ page }) => {

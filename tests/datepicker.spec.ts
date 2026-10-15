@@ -1,11 +1,16 @@
 import { test, expect } from '@playwright/test';
-import { DatePickerPage } from '../page-objects/date-picker-page';
-import { NavigationPage } from '../page-objects/navigation-page';
+import { PageManager } from '../page-objects/page-manager';
 
 test.beforeEach(async ({ page }) => {
-    const navigateTo = new NavigationPage(page)
+    const pom = new PageManager(page)
     await page.goto('https://playground.bondaracademy.com/')
-    await navigateTo.datePickerPage()
+    await pom.navigateTo.datePickerPage()
+})
+
+test('Selecting dates with parametrized page objects methods', async ({ page }) => {
+    const pom = new PageManager(page)
+    await pom.datepickerPage.selectCommonDatepickerDateFromToday(5)
+    await pom.datepickerPage.selectDatepickerWithRangeFromToday(8, 14)
 })
 
 test('Simple datepicker', async ({ page }) => {
@@ -30,53 +35,6 @@ test('Simple datepicker', async ({ page }) => {
 
     await page.locator('.day-cell:not(.bounding-month)').getByText(expectedDay, { exact: true }).click()
     await expect(calendarField).toHaveValue(expectedDate)
-})
-
-test('Selecting dates with parametrized page objects methods', async ({ page }) => {
-    const datePickerPage = new DatePickerPage(page)
-    await datePickerPage.selectCommonDatepickerDateFromToday(5)
-    await datePickerPage.selectDatepickerWithRangeFromToday(8, 14)
-})
-
-test('Range datepicker', async ({ page }) => {
-    const dateField = page.getByPlaceholder('Range Picker')
-    await dateField.click()
-
-    const date1 = new Date()
-    date1.setDate(date1.getDate() + 5)
-    const date2 = new Date()
-    date2.setDate(date2.getDate() + 10)
-
-    const incialDate = date1.getDate().toString()
-    const expectedInicialMonth = date1.toLocaleString('En-US', { month: 'short' })
-    const expectedLongInicialMonth = date1.toLocaleString('En-US', { month: 'long' })
-    const expectedInicialYear = date1.getFullYear()
-
-    let currentMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
-    const expectedInicialMonthAndYear = `${expectedLongInicialMonth} ${expectedInicialYear}`
-
-    while (!currentMonthAndYear?.includes(expectedInicialMonthAndYear)) {
-        await page.locator('.next-month').click()
-        currentMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
-    }
-
-    await page.locator('.day-cell:not(.bounding-month)').getByText(incialDate, { exact: true }).click()
-
-    const finalDate = date2.getDate().toString()
-    const expectedFinalMonth = date2.toLocaleString('En-US', { month: 'short' })
-    const expectedLongFinalMonth = date2.toLocaleString('En-US', { month: 'long' })
-    const expectedFinalYear = date2.getFullYear()
-    const expectedFinalMonthAndYear = `${expectedLongFinalMonth} ${expectedFinalYear}`
-
-    while (!currentMonthAndYear?.includes(expectedFinalMonthAndYear)) {
-        await page.locator('.next-month').click()
-        currentMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
-    }
-
-    const expectedDate = `${expectedInicialMonth} ${incialDate}, ${expectedInicialYear} - ${expectedFinalMonth} ${finalDate}, ${expectedFinalYear}`
-
-    await page.locator('.day-cell:not(.bounding-month)').getByText(finalDate, { exact: true }).click()
-    await expect(dateField).toHaveValue(expectedDate)
 })
 
 test('Range datepicker AI improved', async ({ page }) => {

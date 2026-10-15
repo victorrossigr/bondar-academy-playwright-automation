@@ -1,15 +1,14 @@
 import { test } from '@playwright/test';
-import { NavigationPage } from '../page-objects/navigation-page';
+import { PageManager } from '../page-objects/page-manager';
 
 test.beforeEach(async ({ page }) => {
     await page.goto('https://playground.bondaracademy.com/')
 })
 
 test('Navigating to every page', async ({ page }) => {
-    const navigateTo = new NavigationPage(page)
-    
-    await navigateTo.formLayoutsPage()
-    await navigateTo.datePickerPage()
-    await navigateTo.dialogPage()
-    await navigateTo.smartTablePage()
+    const pom = new PageManager(page)
+    await pom.navigateTo.formLayoutsPage()
+    await pom.navigateTo.datePickerPage()
+    await pom.navigateTo.dialogPage()
+    await pom.navigateTo.smartTablePage()
 })

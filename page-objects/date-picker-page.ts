@@ -1,6 +1,7 @@
 import { Page, expect } from '@playwright/test'
+import { step } from '../helpers/test-step-decorator'
 
-export class DatePickerPage {
+export class DatepickerPage {
 
     private readonly page: Page
 
@@ -8,6 +9,7 @@ export class DatePickerPage {
         this.page = page
     }
 
+    @step
     async selectCommonDatepickerDateFromToday(daysFromToday: number) {
         const calendarField = this.page.getByPlaceholder('Form Picker')
         await calendarField.click()
@@ -15,6 +17,7 @@ export class DatePickerPage {
         await expect(calendarField).toHaveValue(expectedDate)
     }
 
+    @step
     async selectDatepickerWithRangeFromToday(daysFromTodayStart: number, daysFromTodayEnd: number) {
         const calendarField = this.page.getByPlaceholder('Range Picker')
         await calendarField.click()
